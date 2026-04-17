@@ -83,10 +83,9 @@ const App = (() => {
   function _saveLogin() {
     const name = document.getElementById('loginNameInput')?.value?.trim() || '';
     const email = document.getElementById('loginEmailInput')?.value?.trim() || '';
-    const password = document.getElementById('loginPasswordInput')?.value || '';
 
-    if (!name || !email || !password) {
-      UI.showToast('Please fill name, email, and password.', 'warning');
+    if (!name || !email) {
+      UI.showToast('Please fill name and email.', 'warning');
       return;
     }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
@@ -97,7 +96,6 @@ const App = (() => {
     _writeUserProfile(_userProfile);
     _updateLoginButton();
     _hideLoginModal();
-    document.getElementById('loginPasswordInput').value = '';
     UI.showToast(`Welcome, ${name}!`, 'success');
   }
 
@@ -208,7 +206,8 @@ const App = (() => {
       return;
     }
     if (message.length > CONFIG.MAX_CONTACT_MESSAGE_LENGTH) {
-      UI.showToast(`Please keep your support message under ${CONFIG.MAX_CONTACT_MESSAGE_LENGTH} characters.`, 'warning');
+      const overBy = message.length - CONFIG.MAX_CONTACT_MESSAGE_LENGTH;
+      UI.showToast(`Message is ${message.length} chars. Please shorten by ${overBy}.`, 'warning');
       return;
     }
     const mailto = `mailto:support@healthassistantai.app?subject=${encodeURIComponent('Health Assistant Support Request')}&body=${encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`)}`;
