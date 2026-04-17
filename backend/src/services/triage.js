@@ -1,4 +1,4 @@
-const CRITICAL_KEYWORDS = [
+const CRITICAL_KEYWORDS = Object.freeze([
   "not breathing",
   "can't breathe",
   "chest pain",
@@ -8,10 +8,23 @@ const CRITICAL_KEYWORDS = [
   "seizure",
   "cardiac arrest",
   "heart attack",
-];
+]);
 
-const HIGH_KEYWORDS = ["fracture", "severe burn", "head injury", "poison", "allergic reaction"];
-const MEDIUM_KEYWORDS = ["fever", "vomiting", "diarrhea", "sprain", "minor burn", "infection"];
+const HIGH_KEYWORDS = Object.freeze([
+  "fracture",
+  "severe burn",
+  "head injury",
+  "poison",
+  "allergic reaction",
+]);
+const MEDIUM_KEYWORDS = Object.freeze([
+  "fever",
+  "vomiting",
+  "diarrhea",
+  "sprain",
+  "minor burn",
+  "infection",
+]);
 
 const SPECIALTY_HINTS = {
   cardiac: ["chest pain", "heart", "cardiac"],

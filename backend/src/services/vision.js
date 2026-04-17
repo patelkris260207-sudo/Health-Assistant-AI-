@@ -1,9 +1,9 @@
-const PHOTO_HINTS = [
+const PHOTO_HINTS = Object.freeze([
   { keyword: "burn", summary: "Possible burn injury signs in photo.", specialty: "trauma" },
   { keyword: "bleed", summary: "Possible bleeding visible in image.", specialty: "trauma" },
   { keyword: "rash", summary: "Possible skin reaction/rash pattern.", specialty: "general" },
   { keyword: "swelling", summary: "Possible swelling around affected area.", specialty: "general" },
-];
+]);
 
 export function analyzePhoto(photo) {
   if (!photo || !photo.fileName) {

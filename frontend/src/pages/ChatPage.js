@@ -78,16 +78,23 @@ export function renderChatPage(root) {
       region: DEFAULT_REGION,
     };
 
-    const response = await fetch("/api/chat", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
-    const data = await response.json();
+    try {
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      if (!response.ok) {
+        throw new Error(`Request failed with status ${response.status}`);
+      }
 
-    disclaimer.textContent = data.disclaimer;
-    addMessage(chatLog, "assistant", `${data.guidance} Severity: ${data.triage.severity}.`);
-    addMessage(chatLog, "assistant", data.location.message);
-    renderEmergencyPanel(emergencyPanel, data.emergency);
+      const data = await response.json();
+      disclaimer.textContent = data.disclaimer;
+      addMessage(chatLog, "assistant", `${data.guidance} Severity: ${data.triage.severity}.`);
+      addMessage(chatLog, "assistant", data.location.message);
+      renderEmergencyPanel(emergencyPanel, data.emergency);
+    } catch (error) {
+      addMessage(chatLog, "assistant", `Unable to process request. ${error.message}`);
+    }
   });
 }
