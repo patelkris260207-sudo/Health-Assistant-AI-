@@ -30,6 +30,86 @@ const UI = {
 /* ── App state ────────────────────────────────────────────────────── */
 const App = (() => {
   let _isSending = false;
+  let _userProfile = null;
+
+  /* ── tiny utility ───────────────────────────────────────────────── */
+  function _escapeHtml(text = '') {
+    return String(text)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function _readUserProfile() {
+    try {
+      const raw = localStorage.getItem(CONFIG.LS_USER_PROFILE);
+      return raw ? JSON.parse(raw) : null;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  function _writeUserProfile(profile) {
+    if (profile) {
+      localStorage.setItem(CONFIG.LS_USER_PROFILE, JSON.stringify(profile));
+    } else {
+      localStorage.removeItem(CONFIG.LS_USER_PROFILE);
+    }
+  }
+
+  function _updateLoginButton() {
+    const label = document.getElementById('loginBtnLabel');
+    if (!label) return;
+    label.textContent = _userProfile?.name ? _userProfile.name.split(' ')[0] : 'Login';
+  }
+
+  function _showLoginModal() {
+    const modal = document.getElementById('loginModal');
+    const nameInput = document.getElementById('loginNameInput');
+    const emailInput = document.getElementById('loginEmailInput');
+    const logoutBtn = document.getElementById('logoutBtn');
+    if (nameInput) nameInput.value = _userProfile?.name || '';
+    if (emailInput) emailInput.value = _userProfile?.email || '';
+    if (logoutBtn) logoutBtn.classList.toggle('hidden', !_userProfile);
+    modal?.classList.add('active');
+  }
+
+  function _hideLoginModal() {
+    document.getElementById('loginModal')?.classList.remove('active');
+  }
+
+  function _saveLogin() {
+    const name = document.getElementById('loginNameInput')?.value?.trim() || '';
+    const email = document.getElementById('loginEmailInput')?.value?.trim() || '';
+    const password = document.getElementById('loginPasswordInput')?.value || '';
+
+    if (!name || !email || !password) {
+      UI.showToast('Please fill name, email, and password.', 'warning');
+      return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      UI.showToast('Please enter a valid email address.', 'warning');
+      return;
+    }
+
+    _userProfile = { name, email };
+    _writeUserProfile(_userProfile);
+    _updateLoginButton();
+    _hideLoginModal();
+    document.getElementById('loginPasswordInput').value = '';
+    UI.showToast(`Welcome, ${name}!`, 'success');
+  }
+
+  function _logout() {
+    _userProfile = null;
+    _writeUserProfile(null);
+    _updateLoginButton();
+    _hideLoginModal();
+    document.getElementById('loginForm')?.reset();
+    UI.showToast('You have been logged out.', 'info');
+  }
 
   /* ── Setup wizard ────────────────────────────────────────────────── */
   function _showSetupWizard() {
@@ -65,6 +145,7 @@ const App = (() => {
       UI.setLocationBadge(`📍 ${city}`, true);
       Chat.addSystemMessage(`📍 Location detected: ${city} (${lat.toFixed(4)}, ${lng.toFixed(4)})`);
       UI.showToast(`Location set to ${city}`, 'success');
+      _renderNearbyHospitals();
     } catch (err) {
       UI.setLocationBadge('📍 Location');
       const msg =
@@ -72,7 +153,64 @@ const App = (() => {
           ? 'Location permission denied. Nearest hospitals will be listed alphabetically.'
           : 'Could not get location. Nearest hospitals will be listed alphabetically.';
       UI.showToast(msg, 'warning');
+      _renderNearbyHospitals();
     }
+  }
+
+  async function _renderNearbyHospitals() {
+    const list = document.getElementById('nearbyHospitalsList');
+    if (!list) return;
+    list.innerHTML = '<p class="loading-text">📍 Loading nearby hospitals…</p>';
+    try {
+      const hospitals = await HospitalDB.getNearby(Location.lat, Location.lng, {
+        limit: 3,
+        allEmergencyOnly: true,
+      });
+      if (!hospitals.length) {
+        list.innerHTML = '<p class="loading-text">No nearby hospitals available. Please call 112.</p>';
+        return;
+      }
+      list.innerHTML = hospitals
+        .map(h => {
+          const firstPhone = h.phone?.[0] || '';
+          const distance = h.distanceKm != null ? `${h.distanceKm.toFixed(1)} km` : 'Distance unavailable';
+          return `
+            <article class="mini-hospital-card">
+              <div class="mini-hospital-title">
+                <span>${_escapeHtml(h.name)}</span>
+                <span>${distance}</span>
+              </div>
+              <p class="mini-hospital-meta">${_escapeHtml(h.city)}, ${_escapeHtml(h.state)}</p>
+              <div class="mini-hospital-actions">
+                ${firstPhone ? `<a class="mini-action-btn" href="tel:${firstPhone.replace(/\D/g, '')}">📞 Call</a>` : ''}
+                <a class="mini-action-btn" href="https://www.google.com/maps?q=${h.lat},${h.lng}" target="_blank" rel="noopener">🗺️ Directions</a>
+              </div>
+            </article>
+          `;
+        })
+        .join('');
+    } catch (err) {
+      list.innerHTML = '<p class="loading-text">Could not load hospitals right now.</p>';
+      console.error(err);
+    }
+  }
+
+  function _onContactSubmit(e) {
+    e.preventDefault();
+    const name = document.getElementById('contactName')?.value?.trim() || '';
+    const email = document.getElementById('contactEmail')?.value?.trim() || '';
+    const message = document.getElementById('contactMessage')?.value?.trim() || '';
+    if (!name || !email || !message) {
+      UI.showToast('Please complete all contact form fields.', 'warning');
+      return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      UI.showToast('Please enter a valid email address.', 'warning');
+      return;
+    }
+    Chat.addSystemMessage(`📩 Support request received from ${_escapeHtml(name)}. We will get back to you at ${_escapeHtml(email)}.`);
+    document.getElementById('contactForm')?.reset();
+    UI.showToast('Message submitted successfully.', 'success');
   }
 
   /* ── Check if text contains emergency keywords ───────────────────── */
@@ -164,6 +302,9 @@ const App = (() => {
 
     /* Emergency (SOS) button in header */
     document.getElementById('emergencyBtn')?.addEventListener('click', () => Emergency.show());
+    document.getElementById('heroEmergencyBtn')?.addEventListener('click', () => Emergency.show());
+    document.getElementById('quickEmergencyBtn')?.addEventListener('click', () => Emergency.show());
+    document.getElementById('quickShareSosBtn')?.addEventListener('click', () => Emergency.shareSOS());
 
     /* Close emergency panel */
     document.getElementById('closeEmergencyPanel')?.addEventListener('click', () => Emergency.hide());
@@ -179,6 +320,14 @@ const App = (() => {
 
     /* Upload / gallery button */
     document.getElementById('uploadBtn')?.addEventListener('click', () => Camera.openFilePicker());
+    document.getElementById('cameraCtaBtn')?.addEventListener('click', () => {
+      if (/Mobi|Android/i.test(navigator.userAgent)) {
+        Camera.openCamera();
+      } else {
+        Camera.openFilePicker();
+      }
+    });
+    document.getElementById('uploadCtaBtn')?.addEventListener('click', () => Camera.openFilePicker());
 
     /* Hidden file input */
     document.getElementById('photoFileInput')?.addEventListener('change', async e => {
@@ -201,6 +350,10 @@ const App = (() => {
     });
     document.getElementById('openSetupBtn')?.addEventListener('click', _showSetupWizard);
     document.getElementById('closeSetupBtn')?.addEventListener('click', _hideSetupWizard);
+    document.getElementById('loginBtn')?.addEventListener('click', _showLoginModal);
+    document.getElementById('closeLoginBtn')?.addEventListener('click', _hideLoginModal);
+    document.getElementById('saveLoginBtn')?.addEventListener('click', _saveLogin);
+    document.getElementById('logoutBtn')?.addEventListener('click', _logout);
 
     /* New chat */
     document.getElementById('newChatBtn')?.addEventListener('click', () => {
@@ -211,6 +364,12 @@ const App = (() => {
 
     /* SOS share */
     document.getElementById('sosShareBtn')?.addEventListener('click', () => Emergency.shareSOS());
+    document.getElementById('heroStartChatBtn')?.addEventListener('click', () => {
+      document.getElementById('messageInput')?.focus();
+      UI.showToast('Describe symptoms and press Send.', 'info');
+    });
+    document.getElementById('refreshNearbyBtn')?.addEventListener('click', _renderNearbyHospitals);
+    document.getElementById('contactForm')?.addEventListener('submit', _onContactSubmit);
 
     /* Quick-question chips */
     document.querySelectorAll('.quick-chip').forEach(chip => {
@@ -227,7 +386,10 @@ const App = (() => {
   /* ── Init ─────────────────────────────────────────────────────────── */
   return {
     async init() {
+      _userProfile = _readUserProfile();
+      _updateLoginButton();
       _wireEvents();
+      _renderNearbyHospitals();
 
       // Show welcome greeting
       Chat.addSystemMessage('👋 Welcome to Health Assistant AI! I can help with medical emergencies, first-aid guidance, and more.');

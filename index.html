@@ -34,6 +34,11 @@
       🔄 <span class="btn-label">New Chat</span>
     </button>
 
+    <!-- Login/Profile -->
+    <button class="header-btn" id="loginBtn" title="Login to save your profile">
+      👤 <span class="btn-label" id="loginBtnLabel">Login</span>
+    </button>
+
     <!-- Settings (API key) -->
     <button class="header-btn" id="openSetupBtn" title="Settings / API Key">
       ⚙️ <span class="btn-label">Settings</span>
@@ -54,6 +59,82 @@
   <main>
     <!-- Chat pane -->
     <div class="chat-pane">
+      <!-- Website sections -->
+      <div class="site-sections">
+        <section class="info-card hero-section" id="home">
+          <p class="section-kicker">AI-Powered Health Assistant</p>
+          <h1>Fast first-aid guidance, SOS help, and nearby hospitals in one place.</h1>
+          <p class="section-copy">
+            Use chat for symptoms, upload injury photos for analysis, and open emergency tools instantly when seconds matter.
+          </p>
+          <div class="hero-actions">
+            <button class="btn-primary" id="heroStartChatBtn">Start AI Chat</button>
+            <button class="btn-ghost" id="heroEmergencyBtn">Open Emergency Help</button>
+          </div>
+        </section>
+
+        <section class="info-card" id="symptoms-chat">
+          <h2>Symptoms &amp; AI Chat</h2>
+          <p class="section-copy">Describe symptoms in your own language and get clear, step-by-step first-aid guidance.</p>
+          <ul class="tips-list">
+            <li>Share exact symptoms and time since onset.</li>
+            <li>Mention age, known conditions, and allergies.</li>
+            <li>Use short updates while following emergency steps.</li>
+          </ul>
+        </section>
+
+        <section class="info-card" id="emergency-help">
+          <h2>Emergency Help</h2>
+          <p class="section-copy">For life-threatening conditions, call emergency services immediately.</p>
+          <div class="quick-emergency-grid">
+            <a href="tel:112" class="emerg-num-btn"><span>National Emergency</span><strong>112</strong></a>
+            <a href="tel:108" class="emerg-num-btn"><span>Ambulance</span><strong>108</strong></a>
+            <a href="tel:100" class="emerg-num-btn"><span>Police</span><strong>100</strong></a>
+            <a href="tel:101" class="emerg-num-btn"><span>Fire</span><strong>101</strong></a>
+          </div>
+          <div class="hero-actions">
+            <button class="btn-primary" id="quickEmergencyBtn">🆘 Open SOS Panel</button>
+            <button class="btn-ghost" id="quickShareSosBtn">📤 Share SOS</button>
+          </div>
+        </section>
+
+        <section class="info-card" id="nearby-hospitals">
+          <h2>Nearby Hospitals</h2>
+          <p class="section-copy">Enable location to see the nearest options first.</p>
+          <div class="hero-actions">
+            <button class="btn-ghost" id="refreshNearbyBtn">Refresh Nearby Hospitals</button>
+          </div>
+          <div id="nearbyHospitalsList" class="nearby-list">
+            <p class="loading-text">Tap “Refresh Nearby Hospitals” to load hospitals.</p>
+          </div>
+        </section>
+
+        <section class="info-card" id="camera-analysis">
+          <h2>Camera / Image Analysis</h2>
+          <p class="section-copy">Capture or upload an image and ask if the condition may be serious.</p>
+          <div class="hero-actions">
+            <button class="btn-ghost" id="cameraCtaBtn">📷 Open Camera</button>
+            <button class="btn-ghost" id="uploadCtaBtn">🖼️ Upload Image</button>
+          </div>
+        </section>
+
+        <section class="info-card" id="contact-support">
+          <h2>Contact &amp; Support</h2>
+          <p class="section-copy">Send feedback, request features, or report issues.</p>
+          <form id="contactForm" class="contact-form" novalidate>
+            <input type="text" id="contactName" placeholder="Your name" required />
+            <input type="email" id="contactEmail" placeholder="Your email" required />
+            <textarea id="contactMessage" rows="4" placeholder="How can we help you?" required></textarea>
+            <button type="submit" class="btn-primary">Send Message</button>
+          </form>
+          <p class="contact-note">Support: <a href="mailto:support@healthassistantai.app">support@healthassistantai.app</a></p>
+        </section>
+
+        <footer class="app-footer" id="footer">
+          <p><strong>Privacy:</strong> API key is kept in browser session storage only.</p>
+          <p><strong>Disclaimer:</strong> This app is for guidance only and does not replace emergency professionals. In life-threatening situations, call <strong>112</strong> immediately.</p>
+        </footer>
+      </div>
 
       <!-- Messages -->
       <div id="chatMessages"></div>
@@ -139,17 +220,6 @@
 </div><!-- /#app -->
 
 <!-- ══════════════════════════════════════════════════════════════
-     CAMERA MODAL
-══════════════════════════════════════════════════════════════ -->
-<div id="cameraModal" role="dialog" aria-label="Camera">
-  <video id="cameraVideo" autoplay playsinline muted></video>
-  <div class="camera-controls">
-    <button class="cam-btn" id="snapBtn">📸 Capture</button>
-    <button class="cam-btn" id="closeCameraBtn">✕ Cancel</button>
-  </div>
-</div>
-
-<!-- ══════════════════════════════════════════════════════════════
      SETUP / API KEY MODAL
 ══════════════════════════════════════════════════════════════ -->
 <div class="modal-overlay" id="setupModal" role="dialog" aria-label="Setup">
@@ -177,6 +247,37 @@
       <button class="btn-ghost" id="closeSetupBtn">Skip for now</button>
       <button class="btn-primary" id="saveApiKeyBtn">Save &amp; Continue</button>
     </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     LOGIN MODAL
+══════════════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="loginModal" role="dialog" aria-label="Login">
+  <div class="modal-box">
+    <h2>👤 Login / Profile</h2>
+    <p>Sign in locally to personalize your Health Assistant experience on this device.</p>
+    <form id="loginForm" onsubmit="return false;">
+      <input type="text" id="loginNameInput" class="setup-input" placeholder="Full name" autocomplete="name" required />
+      <input type="email" id="loginEmailInput" class="setup-input" placeholder="Email address" autocomplete="email" required />
+      <input type="password" id="loginPasswordInput" class="setup-input" placeholder="Password" autocomplete="current-password" required />
+    </form>
+    <div class="modal-actions">
+      <button class="btn-ghost" id="logoutBtn">Logout</button>
+      <button class="btn-ghost" id="closeLoginBtn">Close</button>
+      <button class="btn-primary" id="saveLoginBtn">Save Profile</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     CAMERA MODAL
+══════════════════════════════════════════════════════════════ -->
+<div id="cameraModal" role="dialog" aria-label="Camera">
+  <video id="cameraVideo" autoplay playsinline muted></video>
+  <div class="camera-controls">
+    <button class="cam-btn" id="snapBtn">📸 Capture</button>
+    <button class="cam-btn" id="closeCameraBtn">✕ Cancel</button>
   </div>
 </div>
 

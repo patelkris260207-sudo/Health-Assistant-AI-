@@ -55,6 +55,7 @@ const CONFIG = {
   /* ── sessionStorage keys ─────────────────────────────────────────── */
   LS_API_KEY: 'health_ai_api_key',
   LS_CHAT_HISTORY: 'health_ai_chat_history',
+  LS_USER_PROFILE: 'health_ai_user_profile',
 
   /* ── getters ─────────────────────────────────────────────────────── */
   get apiKey() {
