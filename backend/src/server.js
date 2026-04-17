@@ -33,6 +33,7 @@ function parseBody(req) {
       body += chunk;
       if (body.length > MAX_PAYLOAD_SIZE) {
         reject(new Error("Payload too large"));
+        req.destroy();
       }
     });
     req.on("end", () => {

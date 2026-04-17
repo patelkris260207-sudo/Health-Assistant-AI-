@@ -90,7 +90,7 @@ export function renderChatPage(root) {
 
       const data = await response.json();
       disclaimer.textContent = data.disclaimer;
-      addMessage(chatLog, "assistant", `${data.guidance} Severity: ${data.triage.severity}.`);
+      addMessage(chatLog, "assistant", `${data.guidance}\nSeverity: ${data.triage.severity}.`);
       addMessage(chatLog, "assistant", data.location.message);
       renderEmergencyPanel(emergencyPanel, data.emergency);
     } catch (error) {

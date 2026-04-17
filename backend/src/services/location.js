@@ -46,7 +46,7 @@ export function findNearestEligibleHospitals({
     .map((hospital) => ({
       ...hospital,
       distanceKm: userLocation
-        ? Number(haversineDistanceKm(userLocation, hospital.location).toFixed(2))
+        ? Math.round(haversineDistanceKm(userLocation, hospital.location) * 100) / 100
         : null,
     }))
     .sort((a, b) => {

@@ -29,7 +29,7 @@ function findEmergencyNumbers(region = {}) {
   return emergencyNumbers.find((entry) => entry.country === region.country) || emergencyNumbers[0];
 }
 
-function toReply({ triage, routed, numbers, locationAvailable }) {
+function buildChatResponse({ triage, routed, numbers, locationAvailable }) {
   const selected = routed.selected;
   const emergency = triage.emergencyTrigger
     ? {
@@ -92,7 +92,7 @@ export async function handleChat({ message, photo, location, region }) {
   });
   const routed = routeHospital(candidates);
 
-  return toReply({
+  return buildChatResponse({
     triage,
     routed,
     numbers,
