@@ -1,4 +1,5 @@
 function isValidPhone(phone) {
+  // Step 1 allows common formatting; step 2 enforces realistic digit count.
   if (typeof phone !== "string" || !/^\+?[0-9 -]{7,20}$/.test(phone)) {
     return false;
   }

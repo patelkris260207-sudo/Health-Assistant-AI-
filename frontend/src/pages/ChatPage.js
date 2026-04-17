@@ -85,7 +85,12 @@ export function renderChatPage(root) {
         body: JSON.stringify(payload),
       });
       if (!response.ok) {
-        throw new Error(`Request failed with status ${response.status}`);
+        const details = await response.text();
+        throw new Error(
+          `Request failed: ${response.status} ${response.statusText}${
+            details ? ` - ${details}` : ""
+          }`,
+        );
       }
 
       const data = await response.json();

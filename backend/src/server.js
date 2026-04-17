@@ -9,6 +9,7 @@ import { getNearestHospitalRoute } from "./routes/hospitals.js";
 const PORT = Number(process.env.PORT || 3000);
 const root = process.cwd();
 const frontendRoot = path.resolve(root, "frontend");
+// 1MB is sufficient for JSON chat payload + photo metadata (no binary image upload in this prototype).
 const MAX_PAYLOAD_SIZE = 1_000_000;
 
 function sendJson(res, statusCode, payload) {
