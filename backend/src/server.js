@@ -9,6 +9,7 @@ import { getNearestHospitalRoute } from "./routes/hospitals.js";
 const PORT = Number(process.env.PORT || 3000);
 const root = process.cwd();
 const frontendRoot = path.resolve(root, "frontend");
+const MAX_PAYLOAD_SIZE = 1_000_000;
 
 function sendJson(res, statusCode, payload) {
   res.writeHead(statusCode, { "Content-Type": "application/json; charset=utf-8" });
@@ -30,7 +31,7 @@ function parseBody(req) {
     let body = "";
     req.on("data", (chunk) => {
       body += chunk;
-      if (body.length > 1_000_000) {
+      if (body.length > MAX_PAYLOAD_SIZE) {
         reject(new Error("Payload too large"));
       }
     });

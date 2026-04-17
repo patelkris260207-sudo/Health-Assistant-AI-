@@ -3,6 +3,12 @@ import { renderEmergencyPanel } from "../components/EmergencyPanel.js";
 import { createPhotoUpload } from "../components/PhotoUpload.js";
 import { requestLiveLocation } from "../components/LocationPermission.js";
 
+const DEFAULT_REGION = {
+  country: "India",
+  state: "Gujarat",
+  city: "Ahmedabad",
+};
+
 function addMessage(chatLog, role, text) {
   chatLog.appendChild(createMessageBubble({ role, text }));
   chatLog.scrollTop = chatLog.scrollHeight;
@@ -69,11 +75,7 @@ export function renderChatPage(root) {
       message,
       photo: selectedPhoto,
       location: liveLocation,
-      region: {
-        country: "India",
-        state: "Gujarat",
-        city: "Ahmedabad",
-      },
+      region: DEFAULT_REGION,
     };
 
     const response = await fetch("/api/chat", {

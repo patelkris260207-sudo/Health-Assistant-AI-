@@ -74,13 +74,14 @@ function toReply({ triage, routed, numbers, locationAvailable }) {
 
 export async function handleChat({ message, photo, location, region }) {
   const vision = analyzePhoto(photo);
-  const triage = assessTriage({
+  const triageBase = assessTriage({
     message,
     imageSummary: vision.imageSummary,
   });
-  if (vision.imageSpecialtyHint !== "general" && triage.specialty === "general") {
-    triage.specialty = vision.imageSpecialtyHint;
-  }
+  const triage =
+    vision.imageSpecialtyHint !== "general" && triageBase.specialty === "general"
+      ? { ...triageBase, specialty: vision.imageSpecialtyHint }
+      : triageBase;
 
   const numbers = findEmergencyNumbers(region);
   const candidates = findNearestEligibleHospitals({
