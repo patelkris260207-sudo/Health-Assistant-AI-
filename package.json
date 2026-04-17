@@ -1,0 +1,13 @@
+{
+  "name": "health-assistant-ai",
+  "version": "1.0.0",
+  "description": "Emergency-first health assistant prototype",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "start": "node backend/src/server.js",
+    "test": "node --test backend/tests/*.test.js",
+    "lint": "node scripts/lint-check.js",
+    "build": "node scripts/build-check.js"
+  }
+}
