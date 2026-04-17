@@ -1,5 +1,9 @@
 function isValidPhone(phone) {
-  return typeof phone === "string" && /^\+?[0-9 -]{7,20}$/.test(phone);
+  if (typeof phone !== "string" || !/^\+?[0-9 -]{7,20}$/.test(phone)) {
+    return false;
+  }
+  const digits = phone.replace(/\D/g, "");
+  return digits.length >= 7 && digits.length <= 15;
 }
 
 function isHospitalReachable(hospital) {

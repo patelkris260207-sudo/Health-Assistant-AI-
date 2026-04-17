@@ -26,12 +26,12 @@ const MEDIUM_KEYWORDS = Object.freeze([
   "infection",
 ]);
 
-const SPECIALTY_HINTS = {
+const SPECIALTY_HINTS = Object.freeze({
   cardiac: ["chest pain", "heart", "cardiac"],
   trauma: ["fracture", "head injury", "accident", "bleeding"],
   stroke: ["stroke", "face droop", "speech slur", "weakness"],
   pediatric: ["child", "baby", "infant"],
-};
+});
 
 export function detectSpecialty(text = "") {
   const normalized = text.toLowerCase();

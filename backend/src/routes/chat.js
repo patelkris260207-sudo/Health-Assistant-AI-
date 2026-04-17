@@ -29,6 +29,13 @@ function findEmergencyNumbers(region = {}) {
   return emergencyNumbers.find((entry) => entry.country === region.country) || emergencyNumbers[0];
 }
 
+function mergeSpecialtyHints(triage, imageSpecialtyHint) {
+  if (imageSpecialtyHint !== "general" && triage.specialty === "general") {
+    return { ...triage, specialty: imageSpecialtyHint };
+  }
+  return triage;
+}
+
 function buildChatResponse({ triage, routed, numbers, locationAvailable }) {
   const selected = routed.selected;
   const emergency = triage.emergencyTrigger
@@ -78,10 +85,7 @@ export async function handleChat({ message, photo, location, region }) {
     message,
     imageSummary: vision.imageSummary,
   });
-  const triage =
-    vision.imageSpecialtyHint !== "general" && triageBase.specialty === "general"
-      ? { ...triageBase, specialty: vision.imageSpecialtyHint }
-      : triageBase;
+  const triage = mergeSpecialtyHints(triageBase, vision.imageSpecialtyHint);
 
   const numbers = findEmergencyNumbers(region);
   const candidates = findNearestEligibleHospitals({
