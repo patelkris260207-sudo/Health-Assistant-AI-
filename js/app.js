@@ -207,8 +207,8 @@ const App = (() => {
       UI.showToast('Please enter a valid email address.', 'warning');
       return;
     }
-    if (message.length > 1200) {
-      UI.showToast('Please keep your support message under 1200 characters.', 'warning');
+    if (message.length > CONFIG.MAX_CONTACT_MESSAGE_LENGTH) {
+      UI.showToast(`Please keep your support message under ${CONFIG.MAX_CONTACT_MESSAGE_LENGTH} characters.`, 'warning');
       return;
     }
     const mailto = `mailto:support@healthassistantai.app?subject=${encodeURIComponent('Health Assistant Support Request')}&body=${encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`)}`;

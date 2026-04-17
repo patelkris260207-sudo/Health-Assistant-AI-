@@ -18,7 +18,7 @@ A **fully offline-capable, single-page web application** that acts as an intelli
 | 📤 SOS Share | One-tap share of your location + emergency message via WhatsApp, SMS, etc. |
 | 🇮🇳 India Emergency Numbers | 112, 108, 100, 101, 1091, 1098, 104 … all wired |
 | 🌐 Multi-language | AI replies in the same language the user writes (English, Hindi, Gujarati, Tamil, etc.) |
-| 🔑 API Key in browser | Key kept in-memory only for the active tab session — never persisted in browser storage |
+| 🔑 API Key in browser | Key kept in-memory only for the active page session — never persisted in browser storage |
 
 ---
 

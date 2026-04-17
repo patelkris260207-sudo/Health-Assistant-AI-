@@ -151,8 +151,10 @@ Example for a minor cut:
       _history.push({ role: 'user', content: userText || '(image)' });
       _history.push({ role: 'assistant', content: rawReply });
 
-      // Keep history to last 10 exchanges (20 messages)
-      if (_history.length > 20) _history = _history.slice(-20);
+      // Keep conversation history bounded for token control.
+      if (_history.length > CONFIG.MAX_HISTORY_MESSAGES) {
+        _history = _history.slice(-CONFIG.MAX_HISTORY_MESSAGES);
+      }
 
       return _extractMeta(rawReply);
     },

@@ -1,7 +1,7 @@
 /**
  * Health Assistant AI — Configuration
  * All user-configurable settings live here.
- * The API key is stored in localStorage so it never touches any server.
+ * API keys are kept in-memory only and never persisted in browser storage.
  */
 
 const CONFIG = (() => {
@@ -14,6 +14,8 @@ const CONFIG = (() => {
   OPENAI_MODEL: 'gpt-4o',         // vision-capable model
   MAX_TOKENS: 1200,
   TEMPERATURE: 0.4,               // lower = more deterministic / safer
+  MAX_HISTORY_MESSAGES: 20,
+  MAX_CONTACT_MESSAGE_LENGTH: 1200,
 
   /* ── Emergency Detection ─────────────────────────────────────────── */
   // Any message containing at least one of these phrases triggers the
