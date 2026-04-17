@@ -18,7 +18,7 @@ A **fully offline-capable, single-page web application** that acts as an intelli
 | 📤 SOS Share | One-tap share of your location + emergency message via WhatsApp, SMS, etc. |
 | 🇮🇳 India Emergency Numbers | 112, 108, 100, 101, 1091, 1098, 104 … all wired |
 | 🌐 Multi-language | AI replies in the same language the user writes (English, Hindi, Gujarati, Tamil, etc.) |
-| 🔑 API Key in browser | Key stored only in `localStorage` — never leaves your device to any third-party server |
+| 🔑 API Key in browser | Key kept in-memory only for the active tab session — never persisted in browser storage |
 
 ---
 
@@ -79,7 +79,7 @@ npx serve .
 1. Open the app in your browser
 2. The **Setup** modal opens automatically on first visit
 3. Paste your API key and click **Save & Continue**
-4. The key is stored in your browser's `localStorage` — it never leaves your device
+4. The key is kept in-memory for the active tab — it never leaves your device except direct calls to OpenAI
 
 ---
 
@@ -175,7 +175,7 @@ The system prompt instructs the model to:
 
 ## 🔒 Privacy & Security
 
-- The OpenAI API key is stored **only in `sessionStorage`** in the user's browser (cleared automatically when the tab closes — more secure than localStorage)
+- The OpenAI API key is stored **only in-memory** in the active tab (not persisted to localStorage/sessionStorage)
 - No data is stored on any server — all conversation history is in-memory only
 - Reverse geocoding uses [Nominatim](https://nominatim.openstreetmap.org) (OpenStreetMap) — no API key required
 - Location is **never sent to any server** other than Nominatim for the city name lookup (which does not store personal data)

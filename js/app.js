@@ -93,6 +93,10 @@ const App = (() => {
       UI.showToast('Please enter a valid email address.', 'warning');
       return;
     }
+    if (message.length > 1200) {
+      UI.showToast('Please keep your support message under 1200 characters.', 'warning');
+      return;
+    }
 
     _userProfile = { name, email };
     _writeUserProfile(_userProfile);
