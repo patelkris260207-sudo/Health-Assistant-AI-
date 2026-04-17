@@ -208,9 +208,11 @@ const App = (() => {
       UI.showToast('Please enter a valid email address.', 'warning');
       return;
     }
-    Chat.addSystemMessage(`📩 Support request received from ${_escapeHtml(name)}. We will get back to you at ${_escapeHtml(email)}.`);
+    const mailto = `mailto:support@healthassistantai.app?subject=${encodeURIComponent('Health Assistant Support Request')}&body=${encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`)}`;
+    window.location.href = mailto;
+    Chat.addSystemMessage('📩 Your email app was opened with a pre-filled support draft.');
     document.getElementById('contactForm')?.reset();
-    UI.showToast('Message submitted successfully.', 'success');
+    UI.showToast('Support draft opened in your email app.', 'success');
   }
 
   /* ── Check if text contains emergency keywords ───────────────────── */

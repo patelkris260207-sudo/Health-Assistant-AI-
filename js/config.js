@@ -4,7 +4,10 @@
  * The API key is stored in localStorage so it never touches any server.
  */
 
-const CONFIG = {
+const CONFIG = (() => {
+  let _apiKey = '';
+
+  return {
   /* ── AI Provider ──────────────────────────────────────────────────── */
   AI_PROVIDER: 'openai',          // currently only 'openai' is supported
   OPENAI_API_BASE: 'https://api.openai.com/v1/chat/completions',
@@ -52,22 +55,18 @@ const CONFIG = {
   GEO_TIMEOUT_MS: 10000,
   GEO_MAX_AGE_MS: 60000,
 
-  /* ── sessionStorage keys ─────────────────────────────────────────── */
+  /* ── storage keys (for non-sensitive local data) ─────────────────── */
   LS_API_KEY: 'health_ai_api_key',
   LS_CHAT_HISTORY: 'health_ai_chat_history',
   LS_USER_PROFILE: 'health_ai_user_profile',
 
   /* ── getters ─────────────────────────────────────────────────────── */
   get apiKey() {
-    // sessionStorage is preferred over localStorage: the key is automatically
-    // cleared when the browser tab closes, limiting exposure of the sensitive value.
-    return sessionStorage.getItem(this.LS_API_KEY) || '';
+    // Keep API key in-memory only (never persisted in browser storage).
+    return _apiKey;
   },
   set apiKey(val) {
-    if (val && val.trim()) {
-      sessionStorage.setItem(this.LS_API_KEY, val.trim());
-    } else {
-      sessionStorage.removeItem(this.LS_API_KEY);
-    }
+    _apiKey = val && val.trim() ? val.trim() : '';
   },
-};
+  };
+})();
