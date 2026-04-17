@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Health Assistant AI — Emergency medical guidance, first-aid instructions, hospital finder, and photo-based injury analysis." />
+  <meta name="theme-color" content="#0d1117" />
+  <title>Health Assistant AI 🏥</title>
+
+  <!-- Favicon (emoji) -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏥</text></svg>" />
+
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════════════
+     APP SHELL
+══════════════════════════════════════════════════════════════ -->
+<div id="app">
+
+  <!-- ── Header ─────────────────────────────────────────────── -->
+  <header>
+    <div class="logo">
+      <span class="logo-icon">🏥</span>
+      <span>Health Assistant AI</span>
+    </div>
+
+    <!-- Location badge -->
+    <span id="locationBadge" title="Click Location button to enable">📍 Location</span>
+
+    <!-- New chat -->
+    <button class="header-btn" id="newChatBtn" title="Start a new conversation">
+      🔄 <span class="btn-label">New Chat</span>
+    </button>
+
+    <!-- Settings (API key) -->
+    <button class="header-btn" id="openSetupBtn" title="Settings / API Key">
+      ⚙️ <span class="btn-label">Settings</span>
+    </button>
+
+    <!-- Location -->
+    <button class="header-btn" id="locationBtn" title="Share your location for better hospital recommendations">
+      📍 <span class="btn-label">Location</span>
+    </button>
+
+    <!-- SOS Emergency button (always visible) -->
+    <button class="header-btn" id="emergencyBtn" title="Open Emergency Panel — Hospitals & Emergency Numbers">
+      🆘 SOS
+    </button>
+  </header>
+
+  <!-- ── Main ───────────────────────────────────────────────── -->
+  <main>
+    <!-- Chat pane -->
+    <div class="chat-pane">
+
+      <!-- Messages -->
+      <div id="chatMessages"></div>
+
+      <!-- Quick question chips -->
+      <div class="quick-chips">
+        <button class="quick-chip" data-question="Someone is having a heart attack! What do I do?">❤️ Heart Attack</button>
+        <button class="quick-chip" data-question="Someone is choking. What should I do right now?">🫁 Choking</button>
+        <button class="quick-chip" data-question="There is a severe bleeding wound. How do I stop the bleeding?">🩸 Severe Bleeding</button>
+        <button class="quick-chip" data-question="I think someone is having a stroke. What are the symptoms and what should I do?">🧠 Stroke</button>
+        <button class="quick-chip" data-question="A child has swallowed something. What do I do?">👶 Child Poisoning</button>
+        <button class="quick-chip" data-question="How do I do CPR correctly?">💓 CPR Guide</button>
+        <button class="quick-chip" data-question="Someone has a severe burn. What should I do?">🔥 Burns</button>
+        <button class="quick-chip" data-question="Someone is unconscious and not responding. What should I do?">😵 Unconscious</button>
+      </div>
+
+      <!-- Input area -->
+      <div class="chat-input-area">
+
+        <!-- Image preview -->
+        <div id="imagePreviewArea"></div>
+
+        <div class="input-row">
+          <!-- Camera / Upload buttons -->
+          <div class="input-actions">
+            <button class="icon-btn" id="cameraBtn"  title="Take a photo with your camera">📷</button>
+            <button class="icon-btn" id="uploadBtn"  title="Upload a photo from your gallery">🖼️</button>
+          </div>
+
+          <!-- Text input -->
+          <textarea
+            id="messageInput"
+            rows="2"
+            placeholder="Describe the emergency or ask a health question… (Shift+Enter for new line)"
+            aria-label="Message input"
+          ></textarea>
+
+          <!-- Send button -->
+          <button id="sendBtn">Send</button>
+        </div>
+
+      </div><!-- /chat-input-area -->
+
+    </div><!-- /chat-pane -->
+
+    <!-- ── Emergency panel (slide-in drawer) ──────────────── -->
+    <aside id="emergencyPanel" aria-label="Emergency Information Panel">
+      <div class="emerg-header">
+        <span style="font-size:1.4rem">🚨</span>
+        <h2>EMERGENCY HELP</h2>
+        <button class="emerg-close-btn" id="closeEmergencyPanel" aria-label="Close emergency panel">✕</button>
+      </div>
+
+      <div class="emerg-body">
+
+        <!-- SOS share -->
+        <button id="sosShareBtn">📤 Share My Location + SOS</button>
+
+        <!-- Emergency numbers -->
+        <section>
+          <p class="emerg-section-title">Emergency Numbers</p>
+          <div id="emergencyNumbers">
+            <!-- Populated by emergency.js -->
+          </div>
+        </section>
+
+        <!-- Nearest hospitals -->
+        <section>
+          <p class="emerg-section-title">Nearest Hospitals</p>
+          <p style="font-size:.8rem;color:var(--text-muted);margin-bottom:8px">
+            If a number is unreachable, mark it and the next hospital will appear.
+          </p>
+          <div id="hospitalList">
+            <!-- Populated by emergency.js -->
+          </div>
+        </section>
+
+      </div>
+    </aside>
+
+  </main><!-- /main -->
+
+</div><!-- /#app -->
+
+<!-- ══════════════════════════════════════════════════════════════
+     CAMERA MODAL
+══════════════════════════════════════════════════════════════ -->
+<div id="cameraModal" role="dialog" aria-label="Camera">
+  <video id="cameraVideo" autoplay playsinline muted></video>
+  <div class="camera-controls">
+    <button class="cam-btn" id="snapBtn">📸 Capture</button>
+    <button class="cam-btn" id="closeCameraBtn">✕ Cancel</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     SETUP / API KEY MODAL
+══════════════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="setupModal" role="dialog" aria-label="Setup">
+  <div class="modal-box">
+    <h2>⚙️ Setup — OpenAI API Key</h2>
+    <p>
+      Health Assistant AI uses <strong>OpenAI GPT-4o</strong> to analyse your questions and photos.
+      Your API key is stored <em>only in your browser's sessionStorage</em> — it is never sent to any server other than OpenAI.
+    </p>
+    <form id="apiKeyForm" onsubmit="return false;">
+      <input
+        type="password"
+        id="apiKeyInput"
+        class="setup-input"
+        placeholder="sk-…"
+        autocomplete="off"
+        spellcheck="false"
+      />
+    </form>
+    <div class="setup-note">
+      🔒 Your key is stored in sessionStorage (cleared when the tab closes). Get a key at
+      <a href="https://platform.openai.com/api-keys" target="_blank" rel="noopener">platform.openai.com</a>.
+    </div>
+    <div class="modal-actions">
+      <button class="btn-ghost" id="closeSetupBtn">Skip for now</button>
+      <button class="btn-primary" id="saveApiKeyBtn">Save &amp; Continue</button>
+    </div>
+  </div>
+</div>
+
+<!-- Hidden file input for photo uploads -->
+<input type="file" id="photoFileInput" accept="image/*" capture="environment" />
+
+<!-- Toast notification container -->
+<div id="toastContainer" aria-live="polite"></div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     SCRIPTS (order matters — dependencies first)
+══════════════════════════════════════════════════════════════ -->
+<script src="js/config.js"></script>
+<script src="js/hospitals.js"></script>
+<script src="js/location.js"></script>
+<script src="js/camera.js"></script>
+<script src="js/ai.js"></script>
+<script src="js/emergency.js"></script>
+<script src="js/chat.js"></script>
+<script src="js/app.js"></script>
+
+</body>
+</html>
