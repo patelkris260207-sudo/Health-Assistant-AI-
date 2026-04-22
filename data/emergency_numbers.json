@@ -1,0 +1,34 @@
+[
+  {
+    "country": "India",
+    "state": "",
+    "city": "",
+    "ambulance": "108",
+    "police": "100",
+    "fire": "101"
+  },
+  {
+    "country": "India",
+    "state": "Gujarat",
+    "city": "",
+    "ambulance": "108",
+    "police": "100",
+    "fire": "101"
+  },
+  {
+    "country": "India",
+    "state": "Gujarat",
+    "city": "Ahmedabad",
+    "ambulance": "108",
+    "police": "100",
+    "fire": "101"
+  },
+  {
+    "country": "India",
+    "state": "Maharashtra",
+    "city": "Mumbai",
+    "ambulance": "108",
+    "police": "100",
+    "fire": "101"
+  }
+]

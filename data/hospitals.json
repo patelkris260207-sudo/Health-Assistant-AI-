@@ -1,0 +1,52 @@
+[
+  {
+    "id": "ahm-general-01",
+    "name": "Ahmedabad Civil Emergency Center",
+    "region": { "country": "India", "state": "Gujarat", "city": "Ahmedabad" },
+    "location": { "lat": 23.0522, "lng": 72.5712 },
+    "contact": { "emergencyDesk": "+91 79 2268 0001", "main": "+91 79 2268 0000" },
+    "acceptsAllEmergencies": true,
+    "specialties": ["trauma", "cardiac", "stroke", "pediatric"],
+    "status": { "emergencyOpen": true, "reachable": true }
+  },
+  {
+    "id": "ahm-cardiac-01",
+    "name": "Ahmedabad Cardiac Specialty Hospital",
+    "region": { "country": "India", "state": "Gujarat", "city": "Ahmedabad" },
+    "location": { "lat": 23.0306, "lng": 72.5807 },
+    "contact": { "emergencyDesk": "+91 79 2400 1001", "main": "+91 79 2400 1000" },
+    "acceptsAllEmergencies": false,
+    "specialties": ["cardiac"],
+    "status": { "emergencyOpen": true, "reachable": true }
+  },
+  {
+    "id": "ahm-trauma-01",
+    "name": "Ahmedabad Trauma and Burn Center",
+    "region": { "country": "India", "state": "Gujarat", "city": "Ahmedabad" },
+    "location": { "lat": 23.0469, "lng": 72.5508 },
+    "contact": { "emergencyDesk": "+91 79 2500 9001", "main": "+91 79 2500 9000" },
+    "acceptsAllEmergencies": false,
+    "specialties": ["trauma"],
+    "status": { "emergencyOpen": true, "reachable": false }
+  },
+  {
+    "id": "sur-general-01",
+    "name": "Surat Metro Emergency Hospital",
+    "region": { "country": "India", "state": "Gujarat", "city": "Surat" },
+    "location": { "lat": 21.1702, "lng": 72.8311 },
+    "contact": { "emergencyDesk": "+91 261 220 3001", "main": "+91 261 220 3000" },
+    "acceptsAllEmergencies": true,
+    "specialties": ["general", "trauma", "cardiac"],
+    "status": { "emergencyOpen": true, "reachable": true }
+  },
+  {
+    "id": "mum-general-01",
+    "name": "Mumbai City Emergency Institute",
+    "region": { "country": "India", "state": "Maharashtra", "city": "Mumbai" },
+    "location": { "lat": 19.076, "lng": 72.8777 },
+    "contact": { "emergencyDesk": "+91 22 2800 7001", "main": "+91 22 2800 7000" },
+    "acceptsAllEmergencies": true,
+    "specialties": ["trauma", "cardiac", "stroke", "pediatric"],
+    "status": { "emergencyOpen": true, "reachable": true }
+  }
+]

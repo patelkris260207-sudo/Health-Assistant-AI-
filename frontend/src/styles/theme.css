@@ -1,0 +1,142 @@
+:root {
+  --bg: #07111f;
+  --panel: #0a1526;
+  --text: #f5f9ff;
+  --muted: #adc2e0;
+  --primary: #2f80ed;
+  --danger: #d93838;
+  --warning: #f9a825;
+  --success: #2e7d32;
+  --border: #254064;
+  --user-message-bg: #17345d;
+  --assistant-message-bg: #1f2b41;
+  --input-border: #355780;
+  --input-bg: #0d1a2e;
+  --secondary-btn-bg: #334c6f;
+  --emergency-bg: #3c1717;
+  --fallback-text: #ffd6d6;
+  --disclaimer-text: #ffcccb;
+}
+
+* {
+  box-sizing: border-box;
+  font-family: Inter, Arial, sans-serif;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.shell {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+.app-header h1 {
+  margin: 0;
+  font-size: 2rem;
+}
+
+.subtitle {
+  color: var(--muted);
+}
+
+.chat-log {
+  min-height: 320px;
+  max-height: 420px;
+  overflow: auto;
+  border: 1px solid var(--border);
+  background: var(--panel);
+  border-radius: 12px;
+  padding: 12px;
+  margin-bottom: 10px;
+}
+
+.message {
+  margin: 8px 0;
+  padding: 10px 12px;
+  border-radius: 10px;
+  line-height: 1.4;
+}
+
+.message-user { background: var(--user-message-bg); }
+
+.message-assistant { background: var(--assistant-message-bg); }
+
+.chat-form textarea {
+  width: 100%;
+  border-radius: 10px;
+  border: 1px solid var(--input-border);
+  background: var(--input-bg);
+  color: var(--text);
+  padding: 10px;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.btn {
+  border: 0;
+  border-radius: 12px;
+  padding: 12px 14px;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: white;
+}
+
+.btn-secondary {
+  background: var(--secondary-btn-bg);
+  color: white;
+}
+
+.btn-danger {
+  background: var(--danger);
+  color: white;
+  margin-right: 8px;
+  margin-top: 8px;
+}
+
+.emergency-panel {
+  border: 2px solid var(--danger);
+  background: var(--emergency-bg);
+  border-radius: 12px;
+  padding: 14px;
+  margin-bottom: 12px;
+}
+
+.emergency-panel h2 {
+  margin-top: 0;
+}
+
+.hidden {
+  display: none;
+}
+
+.hospital-card {
+  border-left: 4px solid var(--warning);
+  padding-left: 8px;
+}
+
+.fallback-note {
+  color: var(--fallback-text);
+}
+
+.photo-upload {
+  margin: 14px 0;
+}
+
+.disclaimer {
+  color: var(--disclaimer-text);
+}
